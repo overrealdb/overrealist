@@ -39,6 +39,7 @@ const VIEW_NAVIGATION: ViewPage[][] = [
 	["query", "explorer", "graphql"],
 	["designer", "authentication", "parameters", "functions"],
 	["documentation"],
+	["agents", "knowledge"],
 ];
 
 interface NavigationItem {

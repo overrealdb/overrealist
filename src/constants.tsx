@@ -2,6 +2,7 @@ import type { MantineColor, MantineColorScheme } from "@mantine/core";
 import {
 	iconAPI,
 	iconAuth,
+	iconBook,
 	iconBraces,
 	iconChart,
 	iconChat,
@@ -23,6 +24,7 @@ import {
 	iconReferral,
 	iconRelation,
 	iconSearch,
+	iconSidekick,
 	iconTable,
 	iconTag,
 	iconTransfer,
@@ -329,6 +331,18 @@ export const VIEW_PAGES: Record<ViewPage, ViewPageInfo> = {
 		icon: iconTransfer,
 		disabled: ({ flags, version }) =>
 			!flags.v3_migration_tooling || !version || !satisfies(version, ">=2.6.1 <3.0.0-0"),
+	},
+	agents: {
+		id: "agents",
+		name: "Agents",
+		icon: iconSidekick,
+		disabled: ({ flags }) => !flags.overrealdb,
+	},
+	knowledge: {
+		id: "knowledge",
+		name: "Knowledge",
+		icon: iconBook,
+		disabled: ({ flags }) => !flags.overrealdb,
 	},
 };
 

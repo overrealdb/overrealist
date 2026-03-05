@@ -87,7 +87,9 @@ export type ViewPage =
 	| "functions"
 	| "parameters"
 	| "documentation"
-	| "migrations";
+	| "migrations"
+	| "agents"
+	| "knowledge";
 
 export type AppMenuItemType =
 	| "Separator"

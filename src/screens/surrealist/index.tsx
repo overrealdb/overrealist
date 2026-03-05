@@ -30,6 +30,7 @@ import { SupportPlansPage } from "./pages/SupportPlans";
 import { SurrealistSidebar } from "./sidebar";
 import classes from "./style.module.scss";
 import { SurrealistToolbar } from "./toolbar";
+import AgentsView from "./views/agents/AgentsView";
 import AuthenticationView from "./views/authentication/AuthenticationView";
 import DashboardView from "./views/dashboard/DashboardView";
 import DesignerView from "./views/designer/DesignerView";
@@ -37,6 +38,7 @@ import DocumentationView from "./views/documentation/DocumentationView";
 import ExplorerView from "./views/explorer/ExplorerView";
 import FunctionsView from "./views/functions/FunctionsView";
 import GraphqlView from "./views/graphql/GraphqlView";
+import KnowledgeView from "./views/knowledge/KnowledgeView";
 import MigrationView from "./views/migration/MigrationView";
 import MonitorView from "./views/monitor/MonitorView";
 import ParametersView from "./views/parameters/ParametersView";
@@ -74,6 +76,8 @@ const VIEW_PORTALS: Record<ViewPage, HtmlPortalNode> = {
 	parameters: createHtmlPortalNode(PORTAL_OPTIONS),
 	documentation: createHtmlPortalNode(PORTAL_OPTIONS),
 	migrations: createHtmlPortalNode(PORTAL_OPTIONS),
+	agents: createHtmlPortalNode(PORTAL_OPTIONS),
+	knowledge: createHtmlPortalNode(PORTAL_OPTIONS),
 };
 
 const VIEW_COMPONENTS: Record<ViewPage, FC> = {
@@ -88,6 +92,8 @@ const VIEW_COMPONENTS: Record<ViewPage, FC> = {
 	parameters: memo(ParametersView),
 	documentation: memo(DocumentationView),
 	migrations: memo(MigrationView),
+	agents: memo(AgentsView),
+	knowledge: memo(KnowledgeView),
 };
 
 export function SurrealistScreen() {

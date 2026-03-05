@@ -1,9 +1,11 @@
 import { useRef, useState } from "react";
+import { adapter } from "~/adapter";
 import { useStable } from "~/hooks/stable";
 import { useCloudStore } from "~/stores/cloud";
 import { useConfigStore } from "~/stores/config";
 import { tagEvent } from "~/util/analytics";
-import { StreamEvent } from "./types";
+import { parseSseLine, translateEngineEvent } from "./sse";
+import type { StreamEvent } from "./types";
 
 const SIDEKICK_ENDPOINT = "https://xzg2igifvha4rfi2w677skt7h40yrtsm.lambda-url.us-east-1.on.aws/";
 
@@ -13,69 +15,6 @@ export interface SidekickStream {
 	isResponding: boolean;
 	sendMessage: (message: string, chatId?: string) => Promise<void>;
 	cancel: () => void;
-}
-
-/**
- * Parse SSE "data:" lines from the overrealdb engine and translate them
- * into Sidekick StreamEvent format.
- *
- * Engine SSE events:
- *   {"type":"token","text":"..."}
- *   {"type":"tool_result","name":"...","result":...}
- *   {"type":"done","usage":...}
- *   {"type":"error","message":"..."}
- *
- * Sidekick StreamEvent expects:
- *   start, response, sources, thinking, title, complete, error, failure
- */
-function translateEngineEvent(
-	raw: Record<string, unknown>,
-	sessionId: string,
-	contentSoFar: string,
-): StreamEvent | null {
-	switch (raw.type) {
-		case "token":
-			return {
-				type: "response",
-				data: { content: raw.text as string, complete: false },
-			};
-
-		case "tool_result":
-			// Show tool execution as "thinking" indicator
-			return {
-				type: "thinking",
-				data: `Using ${raw.name as string}...`,
-			};
-
-		case "done":
-			return { type: "complete" };
-
-		case "error":
-			return {
-				type: "error",
-				data: (raw.message as string) ?? "Unknown error",
-			};
-
-		default:
-			return null;
-	}
-}
-
-/**
- * Parse SSE text stream (lines prefixed with "data: ") into JSON payloads.
- */
-function parseSseLine(line: string): Record<string, unknown> | null {
-	const trimmed = line.trim();
-	if (!trimmed || trimmed.startsWith(":")) return null;
-
-	const data = trimmed.startsWith("data: ") ? trimmed.slice(6) : trimmed;
-	if (!data) return null;
-
-	try {
-		return JSON.parse(data);
-	} catch {
-		return null;
-	}
 }
 
 /**
@@ -110,7 +49,7 @@ function useOverrealdbStream(handler: StreamHandler): SidekickStream {
 			if (!sessionId) {
 				// Create a new session via the engine
 				const agentId = defaultAgentId || "docs-assistant";
-				const createResp = await fetch(`${base}/chat/sessions`, {
+				const createResp = await adapter.fetch(`${base}/chat/sessions`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					signal: controller.current.signal,
@@ -141,7 +80,7 @@ function useOverrealdbStream(handler: StreamHandler): SidekickStream {
 			});
 
 			// POST to the streaming endpoint
-			const response = await fetch(`${base}/chat/sessions/${sessionId}/stream`, {
+			const response = await adapter.fetch(`${base}/chat/sessions/${sessionId}/stream`, {
 				method: "POST",
 				signal: controller.current.signal,
 				headers: { "Content-Type": "application/json" },

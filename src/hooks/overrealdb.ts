@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { adapter } from "~/adapter";
 import { useConfigStore } from "~/stores/config";
 
 /**
@@ -18,7 +19,7 @@ async function engineFetch<T = unknown>(
 	options?: RequestInit,
 ): Promise<T> {
 	const url = `${baseUrl.replace(/\/$/, "")}${path}`;
-	const response = await fetch(url, {
+	const response = await adapter.fetch(url, {
 		headers: {
 			"Content-Type": "application/json",
 			...options?.headers,
