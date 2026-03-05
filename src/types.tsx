@@ -257,6 +257,12 @@ export interface SurrealistGtmSettings {
 	debug_mode: boolean;
 }
 
+export interface OverrealdbSettings {
+	enabled: boolean;
+	engineUrl: string;
+	defaultAgentId: string;
+}
+
 export interface GraphqlQuery {
 	query?: string;
 	variables?: Record<string, any>;
@@ -304,6 +310,7 @@ export interface SurrealistSettings {
 	serving: SurrealistServingSettings;
 	cloud: SurrealistCloudSettings;
 	gtm: SurrealistGtmSettings;
+	overrealdb: OverrealdbSettings;
 }
 
 export interface SurrealistConfig {

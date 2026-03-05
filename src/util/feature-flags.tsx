@@ -93,6 +93,9 @@ export const schema = {
 	sandbox_deploy: {
 		options: [false, true],
 	},
+	overrealdb: {
+		options: [false, true],
+	},
 } satisfies FeatureFlagSchema;
 
 export const featureFlags = new FeatureFlags({
@@ -122,6 +125,7 @@ export const featureFlags = new FeatureFlags({
 			v3_migration_tooling: true,
 			support_tickets_endpoint: "staging",
 			sandbox_deploy: true,
+			overrealdb: true,
 		},
 		preview: {
 			query_view: true,

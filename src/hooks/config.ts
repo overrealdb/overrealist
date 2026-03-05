@@ -9,6 +9,7 @@ const ACTIONS = {
 	serving: "updateServingSettings",
 	cloud: "updateCloudSettings",
 	gtm: "updateGtmSettings",
+	overrealdb: "updateOverrealdbSettings",
 } satisfies Record<Category, keyof ConfigStore>;
 
 /**

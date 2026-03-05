@@ -103,6 +103,11 @@ export function createBaseSettings(): SurrealistSettings {
 			preview_header: "",
 			debug_mode: false,
 		},
+		overrealdb: {
+			enabled: false,
+			engineUrl: "http://localhost:3100",
+			defaultAgentId: "",
+		},
 	};
 }
 

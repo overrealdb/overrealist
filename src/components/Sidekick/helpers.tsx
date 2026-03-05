@@ -32,10 +32,19 @@ export const SIDEKICK_QUESTIONS = [
 ];
 
 export function chatOf(id: string) {
+	// overrealdb engine IDs don't use SurrealDB RecordId format
+	if (id.includes(":")) {
+		const [table, ...rest] = id.split(":");
+		return new RecordId(table, rest.join(":"));
+	}
 	return new RecordId("sidekick_chat", id);
 }
 
 export function messageOf(id: string) {
+	if (id.includes(":")) {
+		const [table, ...rest] = id.split(":");
+		return new RecordId(table, rest.join(":"));
+	}
 	return new RecordId("sidekick_message", id);
 }
 

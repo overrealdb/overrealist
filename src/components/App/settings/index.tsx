@@ -14,6 +14,7 @@ import {
 	Icon,
 	iconBalance,
 	iconChevronRight,
+	iconAPI,
 	iconClose,
 	iconCommand,
 	iconDownload,
@@ -43,6 +44,7 @@ import { FeatureFlagsTab } from "./tabs/FeatureFlags";
 import { KeybindingsTab } from "./tabs/Keybindings";
 import { LicensesTab } from "./tabs/Licenses";
 import { ManageDataTab } from "./tabs/ManageData";
+import { OverrealdbTab } from "./tabs/Overrealdb";
 import { PreferencesTab } from "./tabs/Preferences";
 import { ServingTab } from "./tabs/Serving";
 import { TemplatesTab } from "./tabs/Templates";
@@ -86,6 +88,13 @@ const CATEGORIES: Category[] = [
 		name: "Backup & Restore",
 		icon: iconTransfer,
 		component: ManageDataTab,
+	},
+	{
+		id: "overrealdb",
+		name: "overrealdb",
+		icon: iconAPI,
+		component: OverrealdbTab,
+		disabled: (flags) => !flags.overrealdb,
 	},
 	{
 		id: "feature-flags",

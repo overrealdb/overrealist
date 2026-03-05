@@ -81,6 +81,13 @@ export function applyMigrations(config: any): SurrealistConfig {
 	config.settings.behavior.recordDiagnostics ??= false;
 	config.settings.behavior.diagnosticsHistorySize ??= 300;
 
+	// overrealdb engine integration settings
+	config.settings.overrealdb ??= {
+		enabled: false,
+		engineUrl: "http://localhost:3100",
+		defaultAgentId: "",
+	};
+
 	return config;
 }
 

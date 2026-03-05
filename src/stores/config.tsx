@@ -17,6 +17,7 @@ import type {
 	SurrealistGtmSettings,
 	SurrealistServingSettings,
 	SurrealistTemplateSettings,
+	OverrealdbSettings,
 } from "~/types";
 import { createBaseConfig, createBaseQuery } from "~/util/defaults";
 import type { schema } from "~/util/feature-flags";
@@ -72,6 +73,7 @@ export type ConfigStore = SurrealistConfig & {
 	updateServingSettings: (settings: Partial<SurrealistServingSettings>) => void;
 	updateCloudSettings: (settings: Partial<SurrealistCloudSettings>) => void;
 	updateGtmSettings: (settings: Partial<SurrealistGtmSettings>) => void;
+	updateOverrealdbSettings: (settings: Partial<OverrealdbSettings>) => void;
 	setFeatureFlag: <T extends FeatureFlag<typeof schema>>(
 		key: T,
 		value: FeatureFlagOption<typeof schema, T>,
@@ -322,6 +324,17 @@ export const useConfigStore = create<ConfigStore>()(
 					...state.settings,
 					gtm: {
 						...state.settings.gtm,
+						...settings,
+					},
+				},
+			})),
+
+		updateOverrealdbSettings: (settings) =>
+			set((state) => ({
+				settings: {
+					...state.settings,
+					overrealdb: {
+						...state.settings.overrealdb,
 						...settings,
 					},
 				},
