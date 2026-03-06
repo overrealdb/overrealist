@@ -1,10 +1,10 @@
 // @vitest-environment node
 import { describe, it, expect } from "vitest";
-import { api, isEngineUp } from "./helpers";
+import { api, isEngineReachable } from "./helpers";
 
-const engineUp = await isEngineUp();
+const reachable = await isEngineReachable();
 
-describe.skipIf(!engineUp)("Health API", () => {
+describe.skipIf(!reachable)("Health API", () => {
   it("GET /health returns status and capabilities", async () => {
     const data = await api<Record<string, unknown>>("/health");
 

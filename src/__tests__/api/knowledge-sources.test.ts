@@ -1,11 +1,11 @@
 // @vitest-environment node
 import { describe, it, expect, afterAll } from "vitest";
-import { api, apiRaw, isEngineUp, testId, cleanupDelete } from "./helpers";
+import { api, apiRaw, isKnowledgeReady, testId, cleanupDelete } from "./helpers";
 
-const engineUp = await isEngineUp();
+const kgReady = await isKnowledgeReady();
 const createdSourceIds: string[] = [];
 
-describe.skipIf(!engineUp)("Knowledge Sources API", () => {
+describe.skipIf(!kgReady)("Knowledge Sources API", () => {
   afterAll(async () => {
     for (const id of createdSourceIds) {
       await cleanupDelete(`/knowledge/sources/${id}`);

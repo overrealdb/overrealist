@@ -1,10 +1,10 @@
 // @vitest-environment node
 import { describe, it, expect } from "vitest";
-import { api, isEngineUp } from "./helpers";
+import { api, isKnowledgeReady } from "./helpers";
 
-const engineUp = await isEngineUp();
+const kgReady = await isKnowledgeReady();
 
-describe.skipIf(!engineUp)("Knowledge Graph API", () => {
+describe.skipIf(!kgReady)("Knowledge Graph API", () => {
   it("GET /knowledge/graph returns nodes and edges", async () => {
     const data = await api<{ nodes: unknown[]; edges: unknown[] }>("/knowledge/graph");
 

@@ -45,22 +45,73 @@ export async function apiRaw(
   return resp;
 }
 
-let _engineUp: boolean | null = null;
+let _engineReachable: boolean | null = null;
 
 /**
- * Check if the engine is reachable (cached after first call).
+ * Check if the engine process is reachable (health endpoint only).
+ * Use for tests that only hit /health or /version.
  */
-export async function isEngineUp(): Promise<boolean> {
-  if (_engineUp !== null) return _engineUp;
+export async function isEngineReachable(): Promise<boolean> {
+  if (_engineReachable !== null) return _engineReachable;
   try {
     const resp = await fetch(`${ENGINE_URL}/health`, {
       signal: AbortSignal.timeout(3000),
     });
-    _engineUp = resp.ok;
+    _engineReachable = resp.ok;
+  } catch {
+    _engineReachable = false;
+  }
+  return _engineReachable;
+}
+
+let _engineUp: boolean | null = null;
+
+/**
+ * Check if the engine is reachable AND operational (cached after first call).
+ * Tests /health first, then verifies a real list endpoint returns 2xx.
+ */
+export async function isEngineUp(): Promise<boolean> {
+  if (_engineUp !== null) return _engineUp;
+  try {
+    const health = await fetch(`${ENGINE_URL}/health`, {
+      signal: AbortSignal.timeout(3000),
+    });
+    if (!health.ok) {
+      _engineUp = false;
+      return false;
+    }
+    // Verify actual DB operations work (health can be OK while DB is down)
+    const probe = await fetch(`${ENGINE_URL}/agents`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    _engineUp = probe.ok;
   } catch {
     _engineUp = false;
   }
   return _engineUp;
+}
+
+let _knowledgeReady: boolean | null = null;
+
+/**
+ * Check if the knowledge graph subsystem is initialized.
+ * Returns false when no embedder is configured (503 on knowledge routes).
+ */
+export async function isKnowledgeReady(): Promise<boolean> {
+  if (_knowledgeReady !== null) return _knowledgeReady;
+  if (!(await isEngineUp())) {
+    _knowledgeReady = false;
+    return false;
+  }
+  try {
+    const resp = await fetch(`${ENGINE_URL}/knowledge/sources`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    _knowledgeReady = resp.ok;
+  } catch {
+    _knowledgeReady = false;
+  }
+  return _knowledgeReady;
 }
 
 /**

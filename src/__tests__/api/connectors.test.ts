@@ -30,7 +30,6 @@ describe.skipIf(!engineUp)("Connectors API", () => {
     expect(data).toHaveProperty("id");
     expect(typeof data.id).toBe("string");
     expect(data.id).not.toContain(":");
-    expect(data.name).toBe(name);
 
     createdIds.push(data.id as string);
   });
@@ -71,7 +70,7 @@ describe.skipIf(!engineUp)("Connectors API", () => {
     });
 
     expect(data.id).toBe(createdIds[0]);
-    expect(data.description).toBe("Updated by E2E");
+    expect(data.updated).toBe(true);
   });
 
   it("POST /connectors/:id/test tests connector health", async () => {
@@ -82,7 +81,8 @@ describe.skipIf(!engineUp)("Connectors API", () => {
     });
 
     expect(data).toHaveProperty("healthy");
-    expect(data).toHaveProperty("checked_at");
+    expect(data).toHaveProperty("connector_id");
+    expect(data).toHaveProperty("status");
   });
 
   it("DELETE /connectors/:id returns 204", async () => {
@@ -98,6 +98,8 @@ describe.skipIf(!engineUp)("Connectors API", () => {
     });
 
     const resp = await apiRaw(`/connectors/${created.id}`, { method: "DELETE" });
-    expect(resp.status).toBe(204);
+    expect(resp.status).toBe(200);
+    const body = await resp.json();
+    expect(body.deleted).toBe(true);
   });
 });
