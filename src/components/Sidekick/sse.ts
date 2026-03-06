@@ -50,7 +50,7 @@ export function translateEngineEvent(
  * Parse SSE text stream (lines prefixed with "data: ") into JSON payloads.
  */
 export function parseSseLine(line: string): Record<string, unknown> | null {
-	const trimmed = line.trim();
+	const trimmed = line.replace(/\r$/, "").trim();
 	if (!trimmed || trimmed.startsWith(":")) return null;
 
 	const data = trimmed.startsWith("data: ") ? trimmed.slice(6) : trimmed;

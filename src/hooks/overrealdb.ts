@@ -45,6 +45,10 @@ async function engineFetch<T = unknown>(
 		throw new Error(`Engine error ${response.status}: ${text}`);
 	}
 
+	if (response.status === 204) {
+		return undefined as T;
+	}
+
 	return response.json();
 }
 

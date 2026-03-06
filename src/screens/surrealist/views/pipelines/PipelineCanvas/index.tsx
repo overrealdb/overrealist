@@ -59,18 +59,18 @@ export function PipelineCanvas({ pipelineId, onSelectStep }: PipelineCanvasProps
 			return;
 		}
 
-		const flowNodes: Node[] = pipeline.steps.map((step) => ({
+		const flowNodes: Node[] = (pipeline.steps ?? []).map((step, i) => ({
 			id: step.id,
 			type: STEP_KIND_TO_NODE_TYPE[step.kind as StepKind] ?? "transform",
-			position: step.position,
+			position: step.position ?? { x: 100 + i * 220, y: 150 },
 			data: {
-				label: step.label ?? STEP_KIND_LABELS[step.kind as StepKind] ?? step.kind,
-				kind: step.kind,
+				label: step.label ?? STEP_KIND_LABELS[step.kind as StepKind] ?? step.kind ?? "Step",
+				kind: step.kind ?? "chunker",
 				config: step.config,
 			},
 		}));
 
-		const flowEdges: Edge[] = pipeline.edges.map((edge, i) => ({
+		const flowEdges: Edge[] = (pipeline.edges ?? []).map((edge) => ({
 			id: `e-${edge.source}-${edge.target}`,
 			source: edge.source,
 			target: edge.target,

@@ -399,15 +399,24 @@ interface AgentTool { kind: string; name: string; description: string; enabled: 
 
 ## Gap Analysis: Frontend ↔ Existing Backend
 
-| Frontend expects | Backend has | Action needed |
+| Frontend expects | Backend has | Status |
 |---|---|---|
-| `GET /health` with `version`, `llm_configured`, `embedder_configured`, `mcp_enabled` | `GET /health` returns `status` + instance info | Extend health response |
-| `GET /agents/tools` | Not implemented | Add route — return tool catalog |
-| `GET /knowledge/sources/:id/documents` | `GET /knowledge/documents?source_id=` | Add route alias |
-| `GET /knowledge/entities/:id/facts` | `GET /knowledge/facts?subject=` | Add route alias |
-| `GET /knowledge/graph?q=` | Separate graph traversal routes | Add composite endpoint |
-| `POST /knowledge/ingest` with `{documents:[{content,source,metadata}]}` | `POST /knowledge/ingest` exists (may differ in shape) | Verify request shape compatibility |
-| `Pipeline.steps[].position` | Pipeline steps may not store position | Add position field to step schema |
-| `Pipeline.edges` as part of Pipeline | Pipeline edges may be separate | Include edges in pipeline GET response |
+| `GET /health` with `version`, `llm_configured`, `embedder_configured`, `mcp_enabled` | Health response extended | RESOLVED |
+| `GET /agents/tools` | Route added — returns tool catalog | RESOLVED |
+| Agent CRUD returns full `AgentDetail` with flat `temperature`, `max_tokens`, `memory_enabled`, normalized `tools` | Transform applied on all agent responses | RESOLVED |
+| `DELETE /agents/:id` returns 204 | Returns `StatusCode::NO_CONTENT` | RESOLVED |
+| `GET /knowledge/sources/:id/documents` | Route alias added | RESOLVED |
+| `GET /knowledge/entities/:id/facts` | Route alias added | RESOLVED |
+| `GET /knowledge/entities?q=` | Text search filter added | RESOLVED |
+| `GET /knowledge/graph?q=` | Composite endpoint added (entities + facts + documents) | RESOLVED |
+| Knowledge lists return flat arrays | Unwrapped `{sources:[...]}` → `[...]` for sources, docs, entities, facts, communities | RESOLVED |
+| `POST /knowledge/ingest` with `{documents:[{content,source,metadata}]}` | `source` accepted as alias for `parent` | RESOLVED |
+| `DELETE /knowledge/sources/:id` returns 204 | Returns `StatusCode::NO_CONTENT` | RESOLVED |
+| `Pipeline.steps[].position` | `VisualPipelineStep` with position added to `PipelineConfig` | RESOLVED |
+| `Pipeline.edges` as part of Pipeline | `VisualPipelineEdge` added to `PipelineConfig` | RESOLVED |
+| `Pipeline.status` field | Added with default `"idle"` | RESOLVED |
+| Pipeline CRUD returns full object | POST/PUT fetch-and-return after mutation | RESOLVED |
+| `DELETE /pipelines/:id` returns 204 | Returns `StatusCode::NO_CONTENT` | RESOLVED |
+| `mcp_endpoints` on agents | Added to `AgentConfig` type + schema | RESOLVED |
 
-All other endpoints (agents CRUD, chat CRUD, streaming, connectors, pipelines CRUD, knowledge sources/entities/communities) already exist in the backend.
+All gaps resolved. Chat/streaming SSE format was already compatible.

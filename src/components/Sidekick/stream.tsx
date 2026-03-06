@@ -41,6 +41,9 @@ function useOverrealdbStream(handler: StreamHandler): SidekickStream {
 		});
 
 		try {
+			if (!engineUrl) {
+				throw new Error("Engine URL not configured");
+			}
 			controller.current = new AbortController();
 			const base = engineUrl.replace(/\/$/, "");
 
@@ -106,8 +109,8 @@ function useOverrealdbStream(handler: StreamHandler): SidekickStream {
 				const chunk = decoder.decode(value, { stream: true });
 				buffer += chunk;
 
-				// SSE lines are separated by newlines
-				const lines = buffer.split("\n");
+				// SSE lines are separated by newlines (handle \r\n too)
+				const lines = buffer.split(/\r?\n/);
 				buffer = lines.pop() ?? "";
 
 				for (const line of lines) {

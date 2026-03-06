@@ -56,6 +56,7 @@ export function ChatPreview({ agentId }: ChatPreviewProps) {
 				});
 				const data = await resp.json();
 				sid = data.id;
+				if (!sid) throw new Error("Failed to create session: no ID returned");
 				setSessionId(sid);
 			}
 
@@ -78,7 +79,7 @@ export function ChatPreview({ agentId }: ChatPreviewProps) {
 				if (done) break;
 
 				const text = decoder.decode(value, { stream: true });
-				const lines = text.split("\n");
+				const lines = text.split(/\r?\n/);
 
 				for (const line of lines) {
 					if (!line.startsWith("data: ")) continue;
