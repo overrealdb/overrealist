@@ -265,13 +265,13 @@ export const VIEW_PAGES: Record<ViewPage, ViewPageInfo> = {
 		id: "dashboard",
 		name: "Dashboard",
 		icon: iconTune,
-		disabled: ({ isCloud }) => !isCloud,
+		disabled: ({ isCloud, flags }) => !isCloud && !flags.overrealdb,
 	},
 	monitor: {
 		id: "monitor",
 		name: "Monitoring",
 		icon: iconChart,
-		disabled: ({ isCloud }) => !isCloud,
+		disabled: ({ isCloud, flags }) => !isCloud && !flags.overrealdb,
 	},
 	query: {
 		id: "query",
@@ -336,12 +336,21 @@ export const VIEW_PAGES: Record<ViewPage, ViewPageInfo> = {
 		id: "agents",
 		name: "Agents",
 		icon: iconSidekick,
+		anim: import("~/assets/animation/agents.json").then((x) => x.default),
 		disabled: ({ flags }) => !flags.overrealdb,
 	},
 	knowledge: {
 		id: "knowledge",
 		name: "Knowledge",
 		icon: iconBook,
+		anim: import("~/assets/animation/knowledge.json").then((x) => x.default),
+		disabled: ({ flags }) => !flags.overrealdb,
+	},
+	pipelines: {
+		id: "pipelines",
+		name: "Pipelines",
+		icon: iconRelation,
+		anim: import("~/assets/animation/pipelines.json").then((x) => x.default),
 		disabled: ({ flags }) => !flags.overrealdb,
 	},
 };
@@ -541,7 +550,7 @@ export const MONITORS: Record<string, Monitor> = {
 };
 
 export const MONITOR_LOG_LEVEL_INFO: Record<string, [string, MantineColor, MonitorSeverity]> = {
-	INFO: [iconHelp, "violet", "info"],
+	INFO: [iconHelp, "surreal", "info"],
 	WARN: [iconWarning, "orange", "warning"],
 	ERROR: [iconErrorCircle, "red", "error"],
 	FATAL: [iconErrorCircle, "red", "error"],

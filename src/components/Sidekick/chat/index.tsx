@@ -164,7 +164,7 @@ export function SidekickChat({ isAuthed, padding, stream }: ChatConversationProp
 										>
 											<ThemeIcon
 												radius={100}
-												color="violet"
+												color="surreal"
 												variant="light"
 												size="lg"
 											>

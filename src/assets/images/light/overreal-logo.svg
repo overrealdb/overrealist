@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 40" fill="none">
+  <defs>
+    <linearGradient id="accent-light" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#CA6F1E"/>
+      <stop offset="100%" stop-color="#E67E22"/>
+    </linearGradient>
+  </defs>
+  <text x="0" y="30" font-family="'Outfit', 'Satoshi', system-ui, sans-serif" font-size="28" font-weight="600" fill="#1A1A1A" letter-spacing="-0.5">overreal</text>
+  <text x="160" y="30" font-family="'Outfit', 'Satoshi', system-ui, sans-serif" font-size="28" font-weight="300" fill="url(#accent-light)" letter-spacing="-0.5">db</text>
+</svg>

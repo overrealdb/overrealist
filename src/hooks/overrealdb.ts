@@ -1,6 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { adapter } from "~/adapter";
 import { useConfigStore } from "~/stores/config";
+import type {
+	AgentDetail,
+	AgentTool,
+	Connector,
+	KnowledgeCommunity,
+	KnowledgeDocument,
+	KnowledgeEntity,
+	KnowledgeFact,
+	KnowledgeGraphData,
+	KnowledgeSource,
+	Pipeline,
+	PipelineRun,
+} from "~/types/overrealdb";
 
 /**
  * Get the overrealdb engine base URL from settings.
@@ -46,7 +59,14 @@ export function useOverrealHealth() {
 		enabled,
 		refetchInterval: 30_000,
 		retry: 1,
-		queryFn: () => engineFetch<{ status: string }>(baseUrl, "/health"),
+		queryFn: () =>
+			engineFetch<{
+				status: string;
+				version?: string;
+				llm_configured?: boolean;
+				embedder_configured?: boolean;
+				mcp_enabled?: boolean;
+			}>(baseUrl, "/health"),
 	});
 }
 
@@ -172,5 +192,255 @@ export function useOverrealKnowledgeSearch() {
 				},
 			);
 		},
+	});
+}
+
+// ── Knowledge Graph (new hooks) ─────────────────────────────────────
+
+export function useOverrealKnowledgeSources() {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+
+	return useQuery({
+		queryKey: ["overrealdb", "knowledge", "sources"],
+		enabled,
+		queryFn: () => engineFetch<KnowledgeSource[]>(baseUrl, "/knowledge/sources"),
+	});
+}
+
+export function useOverrealKnowledgeDocuments(sourceId: string | null) {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+
+	return useQuery({
+		queryKey: ["overrealdb", "knowledge", "documents", sourceId],
+		enabled: enabled && !!sourceId,
+		queryFn: () =>
+			engineFetch<KnowledgeDocument[]>(baseUrl, `/knowledge/sources/${sourceId}/documents`),
+	});
+}
+
+export function useOverrealKnowledgeEntities(query?: string) {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+	const params = query ? `?q=${encodeURIComponent(query)}` : "";
+
+	return useQuery({
+		queryKey: ["overrealdb", "knowledge", "entities", query],
+		enabled,
+		queryFn: () => engineFetch<KnowledgeEntity[]>(baseUrl, `/knowledge/entities${params}`),
+	});
+}
+
+export function useOverrealKnowledgeFacts(entityId: string | null) {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+
+	return useQuery({
+		queryKey: ["overrealdb", "knowledge", "facts", entityId],
+		enabled: enabled && !!entityId,
+		queryFn: () =>
+			engineFetch<KnowledgeFact[]>(baseUrl, `/knowledge/entities/${entityId}/facts`),
+	});
+}
+
+export function useOverrealKnowledgeCommunities() {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+
+	return useQuery({
+		queryKey: ["overrealdb", "knowledge", "communities"],
+		enabled,
+		queryFn: () => engineFetch<KnowledgeCommunity[]>(baseUrl, "/knowledge/communities"),
+	});
+}
+
+export function useOverrealKnowledgeGraph(query?: string) {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+	const params = query ? `?q=${encodeURIComponent(query)}` : "";
+
+	return useQuery({
+		queryKey: ["overrealdb", "knowledge", "graph", query],
+		enabled,
+		queryFn: () => engineFetch<KnowledgeGraphData>(baseUrl, `/knowledge/graph${params}`),
+	});
+}
+
+export function useOverrealKnowledgeIngest() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (payload: {
+			documents: { content: string; source: string; metadata?: Record<string, unknown> }[];
+		}) => {
+			return engineFetch<{ chunks_created: number }>(baseUrl, "/knowledge/ingest", {
+				method: "POST",
+				body: JSON.stringify(payload),
+			});
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "knowledge"] });
+		},
+	});
+}
+
+export function useOverrealKnowledgeDeleteSource() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (sourceId: string) => {
+			await engineFetch(baseUrl, `/knowledge/sources/${sourceId}`, {
+				method: "DELETE",
+			});
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "knowledge"] });
+		},
+	});
+}
+
+// ── Pipelines ───────────────────────────────────────────────────────
+
+export function useOverrealPipelines() {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+
+	return useQuery({
+		queryKey: ["overrealdb", "pipelines"],
+		enabled,
+		queryFn: () => engineFetch<Pipeline[]>(baseUrl, "/pipelines"),
+	});
+}
+
+export function useOverrealPipeline(id: string | null) {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+
+	return useQuery({
+		queryKey: ["overrealdb", "pipeline", id],
+		enabled: enabled && !!id,
+		queryFn: () => engineFetch<Pipeline>(baseUrl, `/pipelines/${id}`),
+	});
+}
+
+export function useOverrealCreatePipeline() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (data: { name: string; description?: string }) => {
+			return engineFetch<Pipeline>(baseUrl, "/pipelines", {
+				method: "POST",
+				body: JSON.stringify(data),
+			});
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "pipelines"] });
+		},
+	});
+}
+
+export function useOverrealUpdatePipeline() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async ({ id, data }: { id: string; data: Partial<Pipeline> }) => {
+			return engineFetch<Pipeline>(baseUrl, `/pipelines/${id}`, {
+				method: "PUT",
+				body: JSON.stringify(data),
+			});
+		},
+		onSuccess: (_data, { id }) => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "pipelines"] });
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "pipeline", id] });
+		},
+	});
+}
+
+export function useOverrealDeletePipeline() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (id: string) => {
+			await engineFetch(baseUrl, `/pipelines/${id}`, { method: "DELETE" });
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "pipelines"] });
+		},
+	});
+}
+
+export function useOverrealConnectors() {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+
+	return useQuery({
+		queryKey: ["overrealdb", "connectors"],
+		enabled,
+		queryFn: () => engineFetch<Connector[]>(baseUrl, "/connectors"),
+	});
+}
+
+// ── Agent Builder (extended) ────────────────────────────────────────
+
+export function useOverrealAgent(id: string | null) {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+
+	return useQuery({
+		queryKey: ["overrealdb", "agent", id],
+		enabled: enabled && !!id,
+		queryFn: () => engineFetch<AgentDetail>(baseUrl, `/agents/${id}`),
+	});
+}
+
+export function useOverrealCreateAgent() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (data: Partial<AgentDetail>) => {
+			return engineFetch<AgentDetail>(baseUrl, "/agents", {
+				method: "POST",
+				body: JSON.stringify(data),
+			});
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "agents"] });
+		},
+	});
+}
+
+export function useOverrealUpdateAgent() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async ({ id, data }: { id: string; data: Partial<AgentDetail> }) => {
+			return engineFetch<AgentDetail>(baseUrl, `/agents/${id}`, {
+				method: "PUT",
+				body: JSON.stringify(data),
+			});
+		},
+		onSuccess: (_data, { id }) => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "agents"] });
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "agent", id] });
+		},
+	});
+}
+
+export function useOverrealAgentTools() {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+
+	return useQuery({
+		queryKey: ["overrealdb", "agent-tools"],
+		enabled,
+		queryFn: () => engineFetch<AgentTool[]>(baseUrl, "/agents/tools"),
 	});
 }

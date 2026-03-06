@@ -1,0 +1,33 @@
+.monitor {
+	padding: var(--mantine-spacing-xl);
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.card {
+	background: var(--mantine-color-obsidian-8);
+	border: 1px solid var(--mantine-color-obsidian-6);
+
+	@include light {
+		background: var(--mantine-color-obsidian-0);
+		border: 1px solid var(--mantine-color-obsidian-2);
+	}
+}
+
+.uptimeBars {
+	min-height: 24px;
+	flex-wrap: nowrap;
+	flex: 1;
+}
+
+.uptimeBar {
+	flex: 1;
+	height: 24px;
+	border-radius: 2px;
+	min-width: 4px;
+	transition: opacity 0.15s ease;
+
+	&:hover {
+		opacity: 0.7;
+	}
+}

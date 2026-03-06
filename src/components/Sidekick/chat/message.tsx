@@ -137,13 +137,13 @@ export function SidekickMessage({ message, thinkingText, isResponding }: Sidekic
 								onClick={() => setSourcesOpen(!sourcesOpen)}
 							>
 								<Text
-									c="violet"
+									c="surreal"
 									fw={500}
 								>
 									{message.sources?.header ?? "Sources"}
 								</Text>
 								<ActionIcon
-									c="violet"
+									c="surreal"
 									variant="transparent"
 									size="sm"
 								>
@@ -162,7 +162,7 @@ export function SidekickMessage({ message, thinkingText, isResponding }: Sidekic
 												icon={
 													<Avatar
 														src={item.img_url}
-														color="violet"
+														color="surreal"
 														radius={4}
 														size={18}
 														styles={{

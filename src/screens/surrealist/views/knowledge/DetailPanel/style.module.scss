@@ -1,0 +1,28 @@
+.detailPanel {
+	width: 350px;
+	min-width: 350px;
+	border-left: 1px solid var(--mantine-color-obsidian-6);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	@include light {
+		border-color: var(--mantine-color-obsidian-2);
+	}
+}
+
+.detailPanelCollapsed {
+	width: 0;
+	min-width: 0;
+	border: none;
+}
+
+.factRow {
+	padding: 6px 0;
+	border-bottom: 1px solid var(--mantine-color-obsidian-7);
+	font-size: var(--mantine-font-size-xs);
+
+	@include light {
+		border-color: var(--mantine-color-obsidian-1);
+	}
+}

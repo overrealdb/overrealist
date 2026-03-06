@@ -30,7 +30,7 @@ export function MemoryUsageChart({
 		.filter((dat) => nodeFilter === undefined || nodeFilter.includes(dat.labels))
 		.map((metric) => ({
 			name: metric.labels,
-			color: "violet",
+			color: "surreal",
 			label: `Memory usage (${metric.labels})`,
 		}));
 

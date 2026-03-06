@@ -118,7 +118,7 @@ export const SURREALIST_THEME: MantineThemeOverride = {
 		}),
 		Indicator: Indicator.extend({
 			defaultProps: {
-				color: "violet",
+				color: "surreal",
 			},
 		}),
 	},

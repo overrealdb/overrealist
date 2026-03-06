@@ -47,7 +47,9 @@ import { PrimaryTitle } from "~/components/PrimaryTitle";
 import { Spacer } from "~/components/Spacer";
 import { useBoolean } from "~/hooks/boolean";
 import { useConnection, useIsConnected, useRequireDatabase } from "~/hooks/connection";
+import { useConfigStore } from "~/stores/config";
 import { useDatasets } from "~/hooks/dataset";
+import { OverrealDashboard } from "../OverrealDashboard";
 import { useStable } from "~/hooks/stable";
 import { openBillingRequiredModal } from "~/modals/billing-required";
 import { activateDatabase, executeQuery } from "~/screens/surrealist/connection/connection";
@@ -94,6 +96,8 @@ const NetworkIngressChartLazy = memo(NetworkIngressChart);
 const NetworkEgressChartLazy = memo(NetworkEgressChart);
 
 export function DashboardView() {
+	const overrealdbEnabled = useConfigStore((s) => s.settings.overrealdb.enabled);
+
 	const isConnected = useIsConnected();
 	const [conn, isCloud, instanceId] = useConnection((c) => [
 		c,
@@ -318,6 +322,9 @@ export function DashboardView() {
 		detailsPending || backupsPending || instancePending || usagePending || organisationPending;
 
 	if (!isCloud) {
+		if (overrealdbEnabled) {
+			return <OverrealDashboard />;
+		}
 		return <Redirect to="/query" />;
 	}
 

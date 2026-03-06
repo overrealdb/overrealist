@@ -1,0 +1,18 @@
+.configPanel {
+	width: 350px;
+	min-width: 350px;
+	border-left: 1px solid var(--mantine-color-obsidian-6);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	@include light {
+		border-color: var(--mantine-color-obsidian-2);
+	}
+}
+
+.configPanelCollapsed {
+	width: 0;
+	min-width: 0;
+	border: none;
+}

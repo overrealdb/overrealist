@@ -16,7 +16,7 @@ interface ChartMoment {
 }
 
 const CHART_SERIES = [
-	{ name: "info", color: "violet", label: "Infos" },
+	{ name: "info", color: "surreal", label: "Infos" },
 	{ name: "warning", color: "yellow", label: "Warnings" },
 	{ name: "error", color: "red", label: "Errors" },
 ];

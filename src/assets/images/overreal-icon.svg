@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="icon-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E67E22"/>
+      <stop offset="100%" stop-color="#F5B041"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer ring: data/db -->
+  <circle cx="24" cy="24" r="20" stroke="url(#icon-grad)" stroke-width="3" fill="none"/>
+  <!-- Inner hexagon: neural/AI -->
+  <polygon points="24,8 37.3,15 37.3,29 24,36 10.7,29 10.7,15" stroke="url(#icon-grad)" stroke-width="2" fill="none" opacity="0.6"/>
+  <!-- Center dot: core engine -->
+  <circle cx="24" cy="22" r="4" fill="url(#icon-grad)"/>
+  <!-- Connection lines from center -->
+  <line x1="24" y1="18" x2="24" y2="8" stroke="url(#icon-grad)" stroke-width="1.5" opacity="0.4"/>
+  <line x1="27.5" y1="24.5" x2="37.3" y2="29" stroke="url(#icon-grad)" stroke-width="1.5" opacity="0.4"/>
+  <line x1="20.5" y1="24.5" x2="10.7" y2="29" stroke="url(#icon-grad)" stroke-width="1.5" opacity="0.4"/>
+</svg>

@@ -1,10 +1,30 @@
 .sidekick-input textarea {
 	background-color: unset;
 	font-size: var(--mantine-font-size-lg);
+	font-family: var(--mantine-font-family);
+
+	&:focus {
+		border-color: var(--mantine-color-violet-6);
+	}
 }
 
 .history-panel {
 	background-color: var(--mantine-color-body);
 	background-color: rgba(from var(--mantine-color-body) r g b / 0.85);
 	backdrop-filter: blur(10px);
+}
+
+// User message bubble
+.message :global(.mantine-Paper-root) {
+	border-color: var(--mantine-color-obsidian-6);
+}
+
+// Assistant response links
+.message a {
+	color: var(--mantine-color-violet-6);
+}
+
+// Thinking indicator
+.message :global(.mantine-Loader-root) {
+	--loader-color: var(--mantine-color-violet-6);
 }

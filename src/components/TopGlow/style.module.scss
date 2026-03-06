@@ -10,6 +10,7 @@
 	transition: top 0.75s cubic-bezier(0, 0.55, 0.45, 1);
 	top: var(--offset);
 	rotate: 180deg;
+	filter: hue-rotate(-100deg) saturate(1.3);
 
 	@include light {
 		opacity: 0.5;

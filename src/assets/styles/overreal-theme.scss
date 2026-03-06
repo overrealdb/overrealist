@@ -1,0 +1,104 @@
+// overrealdb "warm machinery" design system
+// Strategy: Override CSS variable VALUES, not names.
+// Surrealist uses obsidian (dark), surreal (purple), violet (accent).
+// We remap their values to overrealdb tokens (dark + rust orange).
+
+// ── Dark theme ────────────────────────────────────────────────────────
+
+:root[data-mantine-color-scheme="dark"] {
+	// Background scale → near-black
+	--mantine-color-body: #0A0A0A;
+	--mantine-color-obsidian-9: #0A0A0A;
+	--mantine-color-obsidian-8: #111111;
+	--mantine-color-obsidian-7: #1A1A1A;
+	--mantine-color-obsidian-6: #222222;
+	--mantine-color-obsidian-5: #2A2A2A;
+	--mantine-color-obsidian-4: #333333;
+	--mantine-color-obsidian-3: #444444;
+	--mantine-color-obsidian-2: #555555;
+	--mantine-color-obsidian-1: #777777;
+	--mantine-color-obsidian-0: #999999;
+
+	// Remap surreal gradient to rust orange
+	--surreal-energy: #E67E22;
+	--surreal-passion: #F5B041;
+	--surreal-gradient: linear-gradient(135deg, #E67E22, #F5B041);
+
+	// Remap surreal color scale to orange
+	--mantine-color-surreal-0: #FEF5E7;
+	--mantine-color-surreal-1: #FDEBD0;
+	--mantine-color-surreal-2: #FAD7A0;
+	--mantine-color-surreal-3: #F8C471;
+	--mantine-color-surreal-4: #F5B041;
+	--mantine-color-surreal-5: #F39C12;
+	--mantine-color-surreal-6: #E67E22;
+	--mantine-color-surreal-7: #CA6F1E;
+	--mantine-color-surreal-8: #AF601A;
+	--mantine-color-surreal-9: #935116;
+
+	// Remap violet accent to orange
+	--mantine-color-violet-0: #FEF5E7;
+	--mantine-color-violet-1: #FDEBD0;
+	--mantine-color-violet-2: #FAD7A0;
+	--mantine-color-violet-3: #F8C471;
+	--mantine-color-violet-4: #F5B041;
+	--mantine-color-violet-5: #F39C12;
+	--mantine-color-violet-6: #E67E22;
+	--mantine-color-violet-7: #CA6F1E;
+	--mantine-color-violet-8: #AF601A;
+	--mantine-color-violet-9: #935116;
+
+	// Typography
+	--mantine-font-family-monospace: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+	--mantine-font-family: 'Outfit', 'Satoshi', system-ui, sans-serif;
+
+	// Glow override → warm orange glow
+	--surrealist-glow: 0 3px 20px -4px rgba(230, 126, 34, 0.4), 0 3px 15px rgba(245, 176, 65, 0.3);
+}
+
+// ── Light theme ───────────────────────────────────────────────────────
+
+:root[data-mantine-color-scheme="light"] {
+	--mantine-color-body: #FAFAFA;
+	--mantine-color-obsidian-0: #FAFAFA;
+	--mantine-color-obsidian-1: #F5F5F5;
+	--mantine-color-obsidian-2: #E8E8E8;
+	--mantine-color-obsidian-3: #CCCCCC;
+	--mantine-color-obsidian-4: #AAAAAA;
+	--mantine-color-obsidian-5: #888888;
+	--mantine-color-obsidian-6: #666666;
+	--mantine-color-obsidian-7: #444444;
+	--mantine-color-obsidian-8: #222222;
+	--mantine-color-obsidian-9: #111111;
+
+	--surreal-energy: #CA6F1E;
+	--surreal-passion: #E67E22;
+	--surreal-gradient: linear-gradient(135deg, #CA6F1E, #E67E22);
+
+	--mantine-color-surreal-0: #FEF5E7;
+	--mantine-color-surreal-1: #FDEBD0;
+	--mantine-color-surreal-2: #FAD7A0;
+	--mantine-color-surreal-3: #F8C471;
+	--mantine-color-surreal-4: #F5B041;
+	--mantine-color-surreal-5: #F39C12;
+	--mantine-color-surreal-6: #E67E22;
+	--mantine-color-surreal-7: #CA6F1E;
+	--mantine-color-surreal-8: #AF601A;
+	--mantine-color-surreal-9: #935116;
+
+	--mantine-color-violet-0: #FEF5E7;
+	--mantine-color-violet-1: #FDEBD0;
+	--mantine-color-violet-2: #FAD7A0;
+	--mantine-color-violet-3: #F8C471;
+	--mantine-color-violet-4: #F5B041;
+	--mantine-color-violet-5: #F39C12;
+	--mantine-color-violet-6: #E67E22;
+	--mantine-color-violet-7: #CA6F1E;
+	--mantine-color-violet-8: #AF601A;
+	--mantine-color-violet-9: #935116;
+
+	--mantine-font-family-monospace: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+	--mantine-font-family: 'Outfit', 'Satoshi', system-ui, sans-serif;
+
+	--surrealist-glow: 0 3px 20px -4px rgba(202, 111, 30, 0.3), 0 3px 15px rgba(230, 126, 34, 0.2);
+}

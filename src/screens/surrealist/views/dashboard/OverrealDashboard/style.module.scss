@@ -1,0 +1,51 @@
+.dashboard {
+	padding: var(--mantine-spacing-xl);
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.statusBanner {
+	background: var(--mantine-color-obsidian-8);
+	border: 1px solid var(--mantine-color-obsidian-6);
+
+	@include light {
+		background: var(--mantine-color-obsidian-0);
+		border: 1px solid var(--mantine-color-obsidian-2);
+	}
+}
+
+.statCard {
+	background: var(--mantine-color-obsidian-8);
+	border: 1px solid var(--mantine-color-obsidian-6);
+	transition: border-color 0.15s ease, transform 0.15s ease;
+
+	&:hover {
+		border-color: var(--mantine-color-surreal-6);
+		transform: translateY(-1px);
+	}
+
+	@include light {
+		background: var(--mantine-color-obsidian-0);
+		border: 1px solid var(--mantine-color-obsidian-2);
+	}
+}
+
+.actionCard {
+	background: var(--mantine-color-obsidian-8);
+	border: 1px solid var(--mantine-color-obsidian-6);
+	transition: border-color 0.15s ease, background 0.15s ease;
+
+	&:hover {
+		border-color: var(--mantine-color-obsidian-5);
+		background: var(--mantine-color-obsidian-7);
+	}
+
+	@include light {
+		background: var(--mantine-color-obsidian-0);
+		border: 1px solid var(--mantine-color-obsidian-2);
+
+		&:hover {
+			background: var(--mantine-color-obsidian-1);
+		}
+	}
+}

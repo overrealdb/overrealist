@@ -9,11 +9,13 @@ import { MONITORS } from "~/constants";
 import { useConnection } from "~/hooks/connection";
 import { usePanelMinSize } from "~/hooks/panels";
 import { useStable } from "~/hooks/stable";
+import { useConfigStore } from "~/stores/config";
 import { MonitorType } from "~/types";
 import { MonitorContentProps, MonitorLogOptions, MonitorMetricOptions } from "../helpers";
 import { LogPane } from "../LogPane";
 import { MetricPane } from "../MetricPane";
 import { MonitorsPane } from "../MonitorsPane";
+import { OverrealMonitor } from "../OverrealMonitor";
 
 const MONITOR_CONTENTS: Record<MonitorType, React.FC<MonitorContentProps>> = {
 	metrics: memo(MetricPane),
@@ -21,7 +23,11 @@ const MONITOR_CONTENTS: Record<MonitorType, React.FC<MonitorContentProps>> = {
 };
 
 export default function MonitorView() {
-	const [instanceId] = useConnection((c) => [c?.authentication.cloudInstance]);
+	const overrealdbEnabled = useConfigStore((s) => s.settings.overrealdb.enabled);
+	const [instanceId, isCloud] = useConnection((c) => [
+		c?.authentication.cloudInstance,
+		c?.authentication.mode === "cloud",
+	]);
 
 	const [minSidebarSize, rootRef] = usePanelMinSize(275);
 	const [sidebarMinimized, setSidebarMinimized] = useState(false);
@@ -86,6 +92,10 @@ export default function MonitorView() {
 			draft.nodeFilter = undefined;
 		});
 	}, [metricOptions.duration]);
+
+	if (!isCloud && overrealdbEnabled) {
+		return <OverrealMonitor />;
+	}
 
 	return (
 		<Box

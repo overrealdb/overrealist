@@ -1,0 +1,36 @@
+.pipelineListPanel {
+	width: 250px;
+	min-width: 250px;
+	border-right: 1px solid var(--mantine-color-obsidian-6);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	@include light {
+		border-color: var(--mantine-color-obsidian-2);
+	}
+}
+
+.pipelineItem {
+	cursor: pointer;
+	padding: 10px 12px;
+	border-radius: var(--mantine-radius-sm);
+	transition: background-color 0.15s ease;
+
+	&:hover {
+		background-color: var(--mantine-color-obsidian-7);
+
+		@include light {
+			background-color: var(--mantine-color-obsidian-1);
+		}
+	}
+}
+
+.pipelineItemActive {
+	background-color: var(--mantine-color-obsidian-6);
+	border-left: 3px solid var(--mantine-color-violet-6);
+
+	@include light {
+		background-color: var(--mantine-color-obsidian-2);
+	}
+}

@@ -8,7 +8,8 @@ import {
 	Stack,
 	UnstyledButton,
 } from "@mantine/core";
-import { iconArrowLeft, iconCog, iconHelp, iconSearch, pictoSurrealist } from "@surrealdb/ui";
+import { iconArrowLeft, iconCog, iconHelp, iconSearch } from "@surrealdb/ui";
+import overrealIconUrl from "~/assets/images/overreal-icon.svg";
 import clsx from "clsx";
 import { Fragment, useMemo } from "react";
 import { useCloudUnreadConversationsQuery } from "~/cloud/queries/context";
@@ -39,7 +40,7 @@ const VIEW_NAVIGATION: ViewPage[][] = [
 	["query", "explorer", "graphql"],
 	["designer", "authentication", "parameters", "functions"],
 	["documentation"],
-	["agents", "knowledge"],
+	["agents", "knowledge", "pipelines"],
 ];
 
 interface NavigationItem {
@@ -173,10 +174,8 @@ export function SurrealistSidebar({ sidebarMode, className, ...other }: Surreali
 						style={{ flexShrink: 0 }}
 					>
 						<Image
-							my={-9}
-							src={pictoSurrealist}
-							w={42}
-							className={classes.hat}
+							src={overrealIconUrl}
+							w={36}
 						/>
 						<Image
 							src={logoUrl}
