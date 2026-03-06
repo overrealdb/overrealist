@@ -2,6 +2,7 @@ import {
 	Box,
 	Button,
 	Group,
+	Loader,
 	Modal,
 	Stack,
 	Text,
@@ -26,7 +27,7 @@ import classes from "./style.module.scss";
 
 export function AgentsView() {
 	const enabled = useConfigStore((s) => s.settings.overrealdb.enabled);
-	const { data: health } = useOverrealHealth();
+	const { data: health, isLoading: isHealthLoading } = useOverrealHealth();
 	const { refetch } = useOverrealAgents();
 	const isConnected = enabled && health?.status === "ok";
 	const createAgent = useOverrealCreateAgent();
@@ -90,6 +91,14 @@ export function AgentsView() {
 					your users.
 				</Text>
 			</Introduction>
+		);
+	}
+
+	if (enabled && isHealthLoading) {
+		return (
+			<Box style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+				<Loader />
+			</Box>
 		);
 	}
 

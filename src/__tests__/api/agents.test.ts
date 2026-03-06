@@ -32,6 +32,7 @@ describe.skipIf(!engineUp)("Agents API", () => {
 
     expect(data).toHaveProperty("id");
     expect(typeof data.id).toBe("string");
+    expect(data.id).not.toContain(":");
     expect(data.name).toBe(name);
     expect(data.model).toBe("test-model");
     expect(data).toHaveProperty("temperature");
@@ -53,12 +54,13 @@ describe.skipIf(!engineUp)("Agents API", () => {
     }
   });
 
-  it("GET /agents/:id returns agent detail", async () => {
+  it("GET /agents/:id returns agent detail (roundtrip ID)", async () => {
     if (createdIds.length === 0) return;
 
     const data = await api<Record<string, unknown>>(`/agents/${createdIds[0]}`);
 
     expect(data.id).toBe(createdIds[0]);
+    expect(data.id).not.toContain(":");
     expect(data).toHaveProperty("name");
     expect(data).toHaveProperty("model");
     expect(data).toHaveProperty("temperature");
@@ -68,15 +70,27 @@ describe.skipIf(!engineUp)("Agents API", () => {
   it("PUT /agents/:id updates agent", async () => {
     if (createdIds.length === 0) return;
 
+    // First fetch the agent to get its full config
+    const existing = await api<Record<string, unknown>>(`/agents/${createdIds[0]}`);
+
     const data = await api<Record<string, unknown>>(`/agents/${createdIds[0]}`, {
       method: "PUT",
       body: JSON.stringify({
+        name: existing.name,
+        model: existing.model,
         description: "Updated by E2E test",
+        enabled: true,
+        system_prompt: "",
+        tools: [],
+        mcp_endpoints: [],
+        memory_enabled: false,
         temperature: 0.9,
+        max_tokens: 1024,
       }),
     });
 
     expect(data.id).toBe(createdIds[0]);
+    expect(data.id).not.toContain(":");
     expect(data.description).toBe("Updated by E2E test");
   });
 

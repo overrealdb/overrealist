@@ -1,22 +1,24 @@
 import { Paper, Text, Group } from "@mantine/core";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { Icon, iconExplorer } from "@surrealdb/ui";
+import { themed } from "~/util/overreal-colors";
 
 export function SinkNode({ data }: NodeProps) {
+	const color = themed("sink");
 	return (
 		<Paper
 			withBorder
 			p="sm"
 			w={180}
 			style={{
-				borderColor: "#E74C3C",
+				borderColor: color,
 				borderLeftWidth: 3,
 			}}
 		>
 			<Handle
 				type="target"
 				position={Position.Left}
-				style={{ background: "#E74C3C" }}
+				style={{ background: color }}
 			/>
 			<Group
 				gap="xs"
@@ -25,7 +27,7 @@ export function SinkNode({ data }: NodeProps) {
 				<Icon
 					path={iconExplorer}
 					size="sm"
-					color="#E74C3C"
+					color={color}
 				/>
 				<Text
 					size="sm"

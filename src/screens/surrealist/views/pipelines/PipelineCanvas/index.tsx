@@ -15,6 +15,7 @@ import {
 } from "@xyflow/react";
 import { useOverrealPipeline, useOverrealUpdatePipeline } from "~/hooks/overrealdb";
 import { STEP_KIND_LABELS, type StepKind } from "~/types/overrealdb";
+import { themed } from "~/util/overreal-colors";
 import { SourceNode } from "./nodes/SourceNode";
 import { TransformNode } from "./nodes/TransformNode";
 import { SinkNode } from "./nodes/SinkNode";
@@ -199,7 +200,7 @@ export function PipelineCanvas({ pipelineId, onSelectStep }: PipelineCanvasProps
 					variant={BackgroundVariant.Dots}
 					gap={20}
 					size={1}
-					color="#333333"
+					color={themed("bgDot")}
 				/>
 			</ReactFlow>
 		</Box>

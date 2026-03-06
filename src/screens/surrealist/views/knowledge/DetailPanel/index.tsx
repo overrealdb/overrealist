@@ -15,7 +15,7 @@ import {
 	useOverrealKnowledgeFacts,
 } from "~/hooks/overrealdb";
 import type { GraphNode } from "~/types/overrealdb";
-import { NODE_COLORS } from "../GraphPanel/graphSetup";
+import { nodeColor } from "~/util/overreal-colors";
 import classes from "./style.module.scss";
 import clsx from "clsx";
 
@@ -35,7 +35,7 @@ export function DetailPanel({ nodeId, nodeType, onClose }: DetailPanelProps) {
 		return <Box className={clsx(classes.detailPanel, classes.detailPanelCollapsed)} />;
 	}
 
-	const color = nodeType ? NODE_COLORS[nodeType] : "#888";
+	const color = nodeType ? nodeColor(nodeType) : "#888";
 
 	return (
 		<Box className={classes.detailPanel}>

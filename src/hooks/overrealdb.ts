@@ -22,6 +22,11 @@ function useEngineUrl(): string {
 	return useConfigStore((s) => s.settings.overrealdb.engineUrl);
 }
 
+/** URL-encode an ID for use in path segments (defense-in-depth for record IDs with colons). */
+function pathId(id: string): string {
+	return encodeURIComponent(id);
+}
+
 function useOverrealdbEnabled(): boolean {
 	return useConfigStore((s) => s.settings.overrealdb.enabled);
 }
@@ -141,7 +146,7 @@ export function useOverrealMessages(sessionId: string | null) {
 		queryKey: ["overrealdb", "messages", sessionId],
 		enabled: enabled && !!sessionId,
 		queryFn: () =>
-			engineFetch<OverrealMessage[]>(baseUrl, `/chat/sessions/${sessionId}/messages`),
+			engineFetch<OverrealMessage[]>(baseUrl, `/chat/sessions/${pathId(sessionId!)}/messages`),
 	});
 }
 
@@ -162,7 +167,7 @@ export function useOverrealDeleteSession() {
 
 	return useMutation({
 		mutationFn: async (sessionId: string) => {
-			await engineFetch(baseUrl, `/chat/sessions/${sessionId}`, {
+			await engineFetch(baseUrl, `/chat/sessions/${pathId(sessionId)}`, {
 				method: "DELETE",
 			});
 		},
@@ -220,7 +225,7 @@ export function useOverrealKnowledgeDocuments(sourceId: string | null) {
 		queryKey: ["overrealdb", "knowledge", "documents", sourceId],
 		enabled: enabled && !!sourceId,
 		queryFn: () =>
-			engineFetch<KnowledgeDocument[]>(baseUrl, `/knowledge/sources/${sourceId}/documents`),
+			engineFetch<KnowledgeDocument[]>(baseUrl, `/knowledge/sources/${pathId(sourceId!)}/documents`),
 	});
 }
 
@@ -244,7 +249,7 @@ export function useOverrealKnowledgeFacts(entityId: string | null) {
 		queryKey: ["overrealdb", "knowledge", "facts", entityId],
 		enabled: enabled && !!entityId,
 		queryFn: () =>
-			engineFetch<KnowledgeFact[]>(baseUrl, `/knowledge/entities/${entityId}/facts`),
+			engineFetch<KnowledgeFact[]>(baseUrl, `/knowledge/entities/${pathId(entityId!)}/facts`),
 	});
 }
 
@@ -296,7 +301,7 @@ export function useOverrealKnowledgeDeleteSource() {
 
 	return useMutation({
 		mutationFn: async (sourceId: string) => {
-			await engineFetch(baseUrl, `/knowledge/sources/${sourceId}`, {
+			await engineFetch(baseUrl, `/knowledge/sources/${pathId(sourceId)}`, {
 				method: "DELETE",
 			});
 		},
@@ -326,7 +331,7 @@ export function useOverrealPipeline(id: string | null) {
 	return useQuery({
 		queryKey: ["overrealdb", "pipeline", id],
 		enabled: enabled && !!id,
-		queryFn: () => engineFetch<Pipeline>(baseUrl, `/pipelines/${id}`),
+		queryFn: () => engineFetch<Pipeline>(baseUrl, `/pipelines/${pathId(id!)}`),
 	});
 }
 
@@ -353,7 +358,7 @@ export function useOverrealUpdatePipeline() {
 
 	return useMutation({
 		mutationFn: async ({ id, data }: { id: string; data: Partial<Pipeline> }) => {
-			return engineFetch<Pipeline>(baseUrl, `/pipelines/${id}`, {
+			return engineFetch<Pipeline>(baseUrl, `/pipelines/${pathId(id)}`, {
 				method: "PUT",
 				body: JSON.stringify(data),
 			});
@@ -371,7 +376,7 @@ export function useOverrealDeletePipeline() {
 
 	return useMutation({
 		mutationFn: async (id: string) => {
-			await engineFetch(baseUrl, `/pipelines/${id}`, { method: "DELETE" });
+			await engineFetch(baseUrl, `/pipelines/${pathId(id)}`, { method: "DELETE" });
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["overrealdb", "pipelines"] });
@@ -399,7 +404,7 @@ export function useOverrealAgent(id: string | null) {
 	return useQuery({
 		queryKey: ["overrealdb", "agent", id],
 		enabled: enabled && !!id,
-		queryFn: () => engineFetch<AgentDetail>(baseUrl, `/agents/${id}`),
+		queryFn: () => engineFetch<AgentDetail>(baseUrl, `/agents/${pathId(id!)}`),
 	});
 }
 
@@ -426,7 +431,7 @@ export function useOverrealUpdateAgent() {
 
 	return useMutation({
 		mutationFn: async ({ id, data }: { id: string; data: Partial<AgentDetail> }) => {
-			return engineFetch<AgentDetail>(baseUrl, `/agents/${id}`, {
+			return engineFetch<AgentDetail>(baseUrl, `/agents/${pathId(id)}`, {
 				method: "PUT",
 				body: JSON.stringify(data),
 			});

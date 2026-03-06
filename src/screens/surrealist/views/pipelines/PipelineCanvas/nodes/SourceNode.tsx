@@ -1,15 +1,17 @@
 import { Paper, Text, Group } from "@mantine/core";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { Icon, iconDatabase } from "@surrealdb/ui";
+import { themed } from "~/util/overreal-colors";
 
 export function SourceNode({ data }: NodeProps) {
+	const color = themed("source");
 	return (
 		<Paper
 			withBorder
 			p="sm"
 			w={180}
 			style={{
-				borderColor: "#3498DB",
+				borderColor: color,
 				borderLeftWidth: 3,
 			}}
 		>
@@ -20,7 +22,7 @@ export function SourceNode({ data }: NodeProps) {
 				<Icon
 					path={iconDatabase}
 					size="sm"
-					color="#3498DB"
+					color={color}
 				/>
 				<Text
 					size="sm"
@@ -40,7 +42,7 @@ export function SourceNode({ data }: NodeProps) {
 			<Handle
 				type="source"
 				position={Position.Right}
-				style={{ background: "#3498DB" }}
+				style={{ background: color }}
 			/>
 		</Paper>
 	);

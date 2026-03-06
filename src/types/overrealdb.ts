@@ -136,11 +136,4 @@ export const STEP_KIND_LABELS: Record<StepKind, string> = {
 	surrealdb_sink: "SurrealDB Sink",
 };
 
-export const STEP_KIND_COLORS: Record<StepKind, string> = {
-	file_connector: "#3498DB",
-	api_connector: "#2ECC71",
-	chunker: "#E67E22",
-	embedder: "#F5B041",
-	extractor: "#9B59B6",
-	surrealdb_sink: "#E74C3C",
-};
+export { STEP_KIND_COLORS } from "~/util/overreal-colors";

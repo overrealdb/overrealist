@@ -1,4 +1,5 @@
 import { BaseEdge, getBezierPath, type EdgeProps } from "@xyflow/react";
+import { themed } from "~/util/overreal-colors";
 
 export function AnimatedEdge({
 	id,
@@ -26,7 +27,7 @@ export function AnimatedEdge({
 			markerEnd={markerEnd}
 			style={{
 				...style,
-				stroke: "#E67E22",
+				stroke: themed("transform"),
 				strokeWidth: 2,
 				strokeDasharray: "5 5",
 				animation: "dash 1s linear infinite",

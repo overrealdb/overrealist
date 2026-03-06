@@ -1,4 +1,4 @@
-import { Box, Text } from "@mantine/core";
+import { Box, Loader, Text } from "@mantine/core";
 import { iconRelation } from "@surrealdb/ui";
 import { Introduction } from "~/components/Introduction";
 import { useConfigStore } from "~/stores/config";
@@ -11,7 +11,7 @@ import classes from "./style.module.scss";
 
 export function PipelinesView() {
 	const enabled = useConfigStore((s) => s.settings.overrealdb.enabled);
-	const { data: health } = useOverrealHealth();
+	const { data: health, isLoading: isHealthLoading } = useOverrealHealth();
 	const isConnected = enabled && health?.status === "ok";
 
 	const [selectedPipelineId, setSelectedPipelineId] = useState<string | null>(null);
@@ -29,6 +29,14 @@ export function PipelinesView() {
 					automated data flows.
 				</Text>
 			</Introduction>
+		);
+	}
+
+	if (enabled && isHealthLoading) {
+		return (
+			<Box style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+				<Loader />
+			</Box>
 		);
 	}
 

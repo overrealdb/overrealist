@@ -25,6 +25,7 @@ describe.skipIf(!engineUp)("Knowledge Sources API", () => {
 
     expect(data).toHaveProperty("id");
     expect(typeof data.id).toBe("string");
+    expect(data.id).not.toContain(":");
     createdSourceIds.push(data.id);
   });
 
@@ -34,6 +35,7 @@ describe.skipIf(!engineUp)("Knowledge Sources API", () => {
     expect(Array.isArray(data)).toBe(true);
     if (data.length > 0) {
       expect(data[0]).toHaveProperty("id");
+      expect(data[0].id).not.toContain(":");
       expect(data[0]).toHaveProperty("name");
       expect(data[0]).toHaveProperty("document_count");
       expect(typeof data[0].document_count).toBe("number");

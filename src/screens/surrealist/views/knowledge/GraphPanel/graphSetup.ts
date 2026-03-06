@@ -1,13 +1,6 @@
 import Graph from "graphology";
 import type { GraphNode, GraphEdge, KnowledgeGraphData } from "~/types/overrealdb";
-
-/** Node type → color mapping */
-export const NODE_COLORS: Record<GraphNode["type"], string> = {
-	entity: "#E67E22",
-	document: "#3498DB",
-	fact: "#2ECC71",
-	community: "#9B59B6",
-};
+import { themed, nodeColor } from "~/util/overreal-colors";
 
 /** Node type → size mapping */
 export const NODE_SIZES: Record<GraphNode["type"], number> = {
@@ -28,7 +21,7 @@ export function buildGraph(data: KnowledgeGraphData): Graph {
 			graph.addNode(node.id, {
 				label: node.label,
 				size: NODE_SIZES[node.type] ?? 6,
-				color: NODE_COLORS[node.type] ?? "#888888",
+				color: nodeColor(node.type),
 				nodeType: node.type,
 				x: Math.random() * 500,
 				y: Math.random() * 500,
@@ -43,7 +36,7 @@ export function buildGraph(data: KnowledgeGraphData): Graph {
 				graph.addEdgeWithKey(key, edge.source, edge.target, {
 					label: edge.label,
 					size: 1,
-					color: "#555555",
+					color: themed("edge"),
 				});
 			}
 		}
@@ -72,8 +65,8 @@ export function highlightMatches(graph: Graph, query: string): Set<string> {
 	graph.forEachNode((nodeId, attrs) => {
 		const isMatch = matched.has(nodeId);
 		graph.setNodeAttribute(nodeId, "color", isMatch
-			? NODE_COLORS[attrs.nodeType as GraphNode["type"]] ?? "#E67E22"
-			: "#333333");
+			? nodeColor(attrs.nodeType as GraphNode["type"])
+			: themed("dimmed"));
 	});
 
 	return matched;
@@ -87,7 +80,7 @@ export function resetHighlights(graph: Graph) {
 		graph.setNodeAttribute(
 			nodeId,
 			"color",
-			NODE_COLORS[attrs.nodeType as GraphNode["type"]] ?? "#888888",
+			nodeColor(attrs.nodeType as GraphNode["type"]),
 		);
 	});
 }

@@ -1,22 +1,24 @@
 import { Paper, Text, Group } from "@mantine/core";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { Icon, iconFunction } from "@surrealdb/ui";
+import { themed } from "~/util/overreal-colors";
 
 export function TransformNode({ data }: NodeProps) {
+	const color = themed("transform");
 	return (
 		<Paper
 			withBorder
 			p="sm"
 			w={180}
 			style={{
-				borderColor: "#E67E22",
+				borderColor: color,
 				borderLeftWidth: 3,
 			}}
 		>
 			<Handle
 				type="target"
 				position={Position.Left}
-				style={{ background: "#E67E22" }}
+				style={{ background: color }}
 			/>
 			<Group
 				gap="xs"
@@ -25,7 +27,7 @@ export function TransformNode({ data }: NodeProps) {
 				<Icon
 					path={iconFunction}
 					size="sm"
-					color="#E67E22"
+					color={color}
 				/>
 				<Text
 					size="sm"
@@ -45,7 +47,7 @@ export function TransformNode({ data }: NodeProps) {
 			<Handle
 				type="source"
 				position={Position.Right}
-				style={{ background: "#E67E22" }}
+				style={{ background: color }}
 			/>
 		</Paper>
 	);

@@ -5,6 +5,7 @@ import Sigma from "sigma";
 import forceAtlas2 from "graphology-layout-forceatlas2";
 import { useOverrealKnowledgeGraph } from "~/hooks/overrealdb";
 import { buildGraph, highlightMatches, resetHighlights } from "./graphSetup";
+import { themed } from "~/util/overreal-colors";
 import type { GraphNode } from "~/types/overrealdb";
 import classes from "./style.module.scss";
 
@@ -43,10 +44,11 @@ export function GraphPanel({ searchQuery, onSelectNode }: GraphPanelProps) {
 		}
 
 		const renderer = new Sigma(graph, containerRef.current, {
+			allowInvalidContainer: true,
 			renderEdgeLabels: false,
 			defaultEdgeType: "arrow",
 			labelRenderedSizeThreshold: 6,
-			labelColor: { color: "#CCCCCC" },
+			labelColor: { color: themed("label") },
 			labelFont: "'Outfit', system-ui, sans-serif",
 			labelSize: 12,
 		});

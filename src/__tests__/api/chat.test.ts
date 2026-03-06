@@ -25,6 +25,7 @@ describe.skipIf(!engineUp)("Chat Sessions API", () => {
       }),
     });
     agentId = agent.id as string;
+    expect(agentId).not.toContain(":");
   });
 
   afterAll(async () => {
@@ -46,6 +47,7 @@ describe.skipIf(!engineUp)("Chat Sessions API", () => {
 
     expect(data).toHaveProperty("id");
     expect(typeof data.id).toBe("string");
+    expect(data.id).not.toContain(":");
     sessionIds.push(data.id);
   });
 
