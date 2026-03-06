@@ -17,6 +17,7 @@ import { Icon, iconBook, iconDelete, iconPlus, iconRefresh, iconSearch, iconUplo
 import { useState } from "react";
 import { useStable } from "~/hooks/stable";
 import {
+	useOverrealDeduplicate,
 	useOverrealKnowledgeDeleteSource,
 	useOverrealKnowledgeIngest,
 	useOverrealKnowledgeSources,
@@ -46,6 +47,7 @@ export function SourcesPanel({
 	const { data: sources, isLoading, refetch } = useOverrealKnowledgeSources();
 	const deleteSource = useOverrealKnowledgeDeleteSource();
 	const ingestMutation = useOverrealKnowledgeIngest();
+	const dedupMutation = useOverrealDeduplicate();
 
 	const [showIngest, showIngestHandle] = useDisclosure();
 	const [ingestText, setIngestText] = useState("");
@@ -73,6 +75,23 @@ export function SourcesPanel({
 				},
 			},
 		);
+	});
+
+	const handleDedup = useStable(() => {
+		dedupMutation.mutate(0.85, {
+			onSuccess: (report) => {
+				showNotification({
+					title: "Deduplication complete",
+					message: `Scanned ${report.entities_scanned} entities, merged ${report.merged_count}`,
+				});
+			},
+			onError: (err: Error) => {
+				showErrorNotification({
+					title: "Deduplication failed",
+					content: err.message,
+				});
+			},
+		});
 	});
 
 	const handleDelete = useStable((id: string) => {
@@ -196,8 +215,9 @@ export function SourcesPanel({
 					</Stack>
 				</ScrollArea>
 
-				<Box
+				<Stack
 					p="sm"
+					gap="xs"
 					style={{ borderTop: "1px solid var(--mantine-color-obsidian-6)" }}
 				>
 					<Button
@@ -209,7 +229,17 @@ export function SourcesPanel({
 					>
 						Ingest document
 					</Button>
-				</Box>
+					<Button
+						fullWidth
+						size="xs"
+						variant="light"
+						color="violet"
+						onClick={handleDedup}
+						loading={dedupMutation.isPending}
+					>
+						Deduplicate entities
+					</Button>
+				</Stack>
 			</Box>
 
 			<Modal

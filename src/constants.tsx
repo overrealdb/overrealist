@@ -353,6 +353,12 @@ export const VIEW_PAGES: Record<ViewPage, ViewPageInfo> = {
 		anim: import("~/assets/animation/pipelines.json").then((x) => x.default),
 		disabled: ({ flags }) => !flags.overrealdb,
 	},
+	connectors: {
+		id: "connectors",
+		name: "Connectors",
+		icon: iconDatabase,
+		disabled: ({ flags }) => !flags.overrealdb,
+	},
 };
 
 export const SURREAL_KINDS = [

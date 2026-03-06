@@ -41,6 +41,7 @@ import GraphqlView from "./views/graphql/GraphqlView";
 import KnowledgeView from "./views/knowledge/KnowledgeView";
 import MigrationView from "./views/migration/MigrationView";
 import PipelinesView from "./views/pipelines/PipelinesView";
+import ConnectorsView from "./views/connectors/ConnectorsView";
 import MonitorView from "./views/monitor/MonitorView";
 import ParametersView from "./views/parameters/ParametersView";
 import QueryView from "./views/query/QueryView";
@@ -80,6 +81,7 @@ const VIEW_PORTALS: Record<ViewPage, HtmlPortalNode> = {
 	agents: createHtmlPortalNode(PORTAL_OPTIONS),
 	knowledge: createHtmlPortalNode(PORTAL_OPTIONS),
 	pipelines: createHtmlPortalNode(PORTAL_OPTIONS),
+	connectors: createHtmlPortalNode(PORTAL_OPTIONS),
 };
 
 const VIEW_COMPONENTS: Record<ViewPage, FC> = {
@@ -97,6 +99,7 @@ const VIEW_COMPONENTS: Record<ViewPage, FC> = {
 	agents: memo(AgentsView),
 	knowledge: memo(KnowledgeView),
 	pipelines: memo(PipelinesView),
+	connectors: memo(ConnectorsView),
 };
 
 export function SurrealistScreen() {

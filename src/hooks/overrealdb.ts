@@ -5,6 +5,8 @@ import type {
 	AgentDetail,
 	AgentTool,
 	Connector,
+	ConnectorHealth,
+	DeduplicationReport,
 	KnowledgeCommunity,
 	KnowledgeDocument,
 	KnowledgeEntity,
@@ -13,6 +15,7 @@ import type {
 	KnowledgeSource,
 	Pipeline,
 	PipelineRun,
+	SchemaInfo,
 } from "~/types/overrealdb";
 
 /**
@@ -392,6 +395,130 @@ export function useOverrealConnectors() {
 		queryKey: ["overrealdb", "connectors"],
 		enabled,
 		queryFn: () => engineFetch<Connector[]>(baseUrl, "/connectors"),
+	});
+}
+
+export function useOverrealConnector(id: string | null) {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+
+	return useQuery({
+		queryKey: ["overrealdb", "connector", id],
+		enabled: enabled && !!id,
+		queryFn: () => engineFetch<Connector>(baseUrl, `/connectors/${pathId(id!)}`),
+	});
+}
+
+export function useOverrealCreateConnector() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (data: Partial<Connector>) => {
+			return engineFetch<Connector>(baseUrl, "/connectors", {
+				method: "POST",
+				body: JSON.stringify(data),
+			});
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "connectors"] });
+		},
+	});
+}
+
+export function useOverrealUpdateConnector() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async ({ id, data }: { id: string; data: Partial<Connector> }) => {
+			return engineFetch<Connector>(baseUrl, `/connectors/${pathId(id)}`, {
+				method: "PUT",
+				body: JSON.stringify(data),
+			});
+		},
+		onSuccess: (_data, { id }) => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "connectors"] });
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "connector", id] });
+		},
+	});
+}
+
+export function useOverrealDeleteConnector() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (id: string) => {
+			await engineFetch(baseUrl, `/connectors/${pathId(id)}`, { method: "DELETE" });
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "connectors"] });
+		},
+	});
+}
+
+export function useOverrealTestConnector() {
+	const baseUrl = useEngineUrl();
+
+	return useMutation({
+		mutationFn: async (id: string) => {
+			return engineFetch<ConnectorHealth>(baseUrl, `/connectors/${pathId(id)}/test`, {
+				method: "POST",
+			});
+		},
+	});
+}
+
+export function useOverrealConnectorSchema(id: string | null) {
+	const baseUrl = useEngineUrl();
+	const enabled = useOverrealdbEnabled();
+
+	return useQuery({
+		queryKey: ["overrealdb", "connector-schema", id],
+		enabled: enabled && !!id,
+		queryFn: () => engineFetch<SchemaInfo>(baseUrl, `/connectors/${pathId(id!)}/introspect`, { method: "POST" }),
+	});
+}
+
+// ── Pipeline Runs ──────────────────────────────────────────────────
+
+export function useOverrealRunPipeline() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (id: string) => {
+			return engineFetch<{
+				pipeline_id: string;
+				records_loaded: number;
+				records_skipped: number;
+				errors: string[];
+			}>(baseUrl, `/pipelines/${pathId(id)}/run`, { method: "POST" });
+		},
+		onSuccess: (_data, id) => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "pipelines"] });
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "pipeline", id] });
+		},
+	});
+}
+
+// ── Knowledge Dedup ────────────────────────────────────────────────
+
+export function useOverrealDeduplicate() {
+	const baseUrl = useEngineUrl();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (threshold?: number) => {
+			return engineFetch<DeduplicationReport>(baseUrl, "/knowledge/deduplicate", {
+				method: "POST",
+				body: JSON.stringify({ threshold: threshold ?? 0.85 }),
+			});
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["overrealdb", "knowledge"] });
+		},
 	});
 }
 

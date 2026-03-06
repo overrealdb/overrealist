@@ -91,7 +91,42 @@ export interface Connector {
 	id: string;
 	name: string;
 	kind: string;
+	description?: string;
+	connection_string?: string;
 	config: Record<string, unknown>;
+	enabled: boolean;
+	write_enabled: boolean;
+}
+
+export interface ConnectorHealth {
+	connector_id: string;
+	healthy: boolean;
+	message?: string;
+	checked_at: string;
+}
+
+export interface SchemaInfo {
+	tables: TableInfo[];
+}
+
+export interface TableInfo {
+	name: string;
+	columns: ColumnInfo[];
+	row_count?: number;
+}
+
+export interface ColumnInfo {
+	name: string;
+	data_type: string;
+	nullable: boolean;
+	is_primary_key: boolean;
+}
+
+export interface DeduplicationReport {
+	entities_scanned: number;
+	clusters_found: number;
+	merged_count: number;
+	details: { from: string; into: string; similarity: number }[];
 }
 
 // ── Agent Builder ────────────────────────────────────────────────────

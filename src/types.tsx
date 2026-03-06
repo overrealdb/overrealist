@@ -90,7 +90,8 @@ export type ViewPage =
 	| "migrations"
 	| "agents"
 	| "knowledge"
-	| "pipelines";
+	| "pipelines"
+	| "connectors";
 
 export type AppMenuItemType =
 	| "Separator"

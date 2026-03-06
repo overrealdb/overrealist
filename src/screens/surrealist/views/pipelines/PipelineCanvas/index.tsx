@@ -1,6 +1,8 @@
-import { ActionIcon, Box, Group, Loader, Menu, Text, Tooltip } from "@mantine/core";
+import { ActionIcon, Badge, Box, Button, Group, Loader, Menu, Text, Tooltip } from "@mantine/core";
 import { Icon, iconPlus, iconRelation } from "@surrealdb/ui";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { showNotification } from "@mantine/notifications";
+import { showErrorNotification } from "~/util/helpers";
 import {
 	ReactFlow,
 	Controls,
@@ -13,7 +15,7 @@ import {
 	type Node,
 	type Edge,
 } from "@xyflow/react";
-import { useOverrealPipeline, useOverrealUpdatePipeline } from "~/hooks/overrealdb";
+import { useOverrealPipeline, useOverrealUpdatePipeline, useOverrealRunPipeline } from "~/hooks/overrealdb";
 import { STEP_KIND_LABELS, type StepKind } from "~/types/overrealdb";
 import { themed } from "~/util/overreal-colors";
 import { SourceNode } from "./nodes/SourceNode";
@@ -49,8 +51,30 @@ interface PipelineCanvasProps {
 export function PipelineCanvas({ pipelineId, onSelectStep }: PipelineCanvasProps) {
 	const { data: pipeline, isLoading } = useOverrealPipeline(pipelineId);
 	const updatePipeline = useOverrealUpdatePipeline();
+	const runPipeline = useOverrealRunPipeline();
 	const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
 	const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+	const [runResult, setRunResult] = useState<{ records_loaded: number; records_skipped: number; errors: string[] } | null>(null);
+
+	const handleRun = useCallback(() => {
+		if (!pipelineId) return;
+		setRunResult(null);
+		runPipeline.mutate(pipelineId, {
+			onSuccess: (result) => {
+				setRunResult(result);
+				showNotification({
+					title: "Pipeline completed",
+					message: `Loaded ${result.records_loaded} records`,
+				});
+			},
+			onError: (err: Error) => {
+				showErrorNotification({
+					title: "Pipeline run failed",
+					content: err.message,
+				});
+			},
+		});
+	}, [pipelineId, runPipeline]);
 
 	// Sync pipeline data to ReactFlow state
 	useEffect(() => {
@@ -151,36 +175,67 @@ export function PipelineCanvas({ pipelineId, onSelectStep }: PipelineCanvasProps
 			<Group
 				className={classes.toolbar}
 				gap="xs"
+				justify="space-between"
 			>
-				<Menu shadow="md">
-					<Menu.Target>
-						<Tooltip label="Add step">
-							<ActionIcon
-								variant="filled"
-								color="surreal"
-							>
-								<Icon path={iconPlus} />
-							</ActionIcon>
-						</Tooltip>
-					</Menu.Target>
-					<Menu.Dropdown>
-						<Menu.Label>Sources</Menu.Label>
-						<Menu.Item onClick={() => addNode("file_connector")}>
-							File Connector
-						</Menu.Item>
-						<Menu.Item onClick={() => addNode("api_connector")}>
-							API Connector
-						</Menu.Item>
-						<Menu.Label>Transforms</Menu.Label>
-						<Menu.Item onClick={() => addNode("chunker")}>Chunker</Menu.Item>
-						<Menu.Item onClick={() => addNode("embedder")}>Embedder</Menu.Item>
-						<Menu.Item onClick={() => addNode("extractor")}>Extractor</Menu.Item>
-						<Menu.Label>Sinks</Menu.Label>
-						<Menu.Item onClick={() => addNode("surrealdb_sink")}>
-							SurrealDB Sink
-						</Menu.Item>
-					</Menu.Dropdown>
-				</Menu>
+				<Group gap="xs">
+					<Menu shadow="md">
+						<Menu.Target>
+							<Tooltip label="Add step">
+								<ActionIcon
+									variant="filled"
+									color="surreal"
+								>
+									<Icon path={iconPlus} />
+								</ActionIcon>
+							</Tooltip>
+						</Menu.Target>
+						<Menu.Dropdown>
+							<Menu.Label>Sources</Menu.Label>
+							<Menu.Item onClick={() => addNode("file_connector")}>
+								File Connector
+							</Menu.Item>
+							<Menu.Item onClick={() => addNode("api_connector")}>
+								API Connector
+							</Menu.Item>
+							<Menu.Label>Transforms</Menu.Label>
+							<Menu.Item onClick={() => addNode("chunker")}>Chunker</Menu.Item>
+							<Menu.Item onClick={() => addNode("embedder")}>Embedder</Menu.Item>
+							<Menu.Item onClick={() => addNode("extractor")}>Extractor</Menu.Item>
+							<Menu.Label>Sinks</Menu.Label>
+							<Menu.Item onClick={() => addNode("surrealdb_sink")}>
+								SurrealDB Sink
+							</Menu.Item>
+						</Menu.Dropdown>
+					</Menu>
+				</Group>
+
+				<Group gap="xs">
+					{runResult && (
+						<>
+							<Badge size="sm" color="green" variant="light">
+								{runResult.records_loaded} loaded
+							</Badge>
+							{runResult.records_skipped > 0 && (
+								<Badge size="sm" color="yellow" variant="light">
+									{runResult.records_skipped} skipped
+								</Badge>
+							)}
+							{runResult.errors.length > 0 && (
+								<Badge size="sm" color="red" variant="light">
+									{runResult.errors.length} errors
+								</Badge>
+							)}
+						</>
+					)}
+					<Button
+						size="xs"
+						variant="gradient"
+						onClick={handleRun}
+						loading={runPipeline.isPending}
+					>
+						Run
+					</Button>
+				</Group>
 			</Group>
 
 			<ReactFlow
