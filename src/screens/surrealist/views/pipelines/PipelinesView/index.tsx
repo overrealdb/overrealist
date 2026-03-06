@@ -7,6 +7,7 @@ import { PipelineCanvas } from "../PipelineCanvas";
 import { PipelineList } from "../PipelineList";
 import { ConfigPanel } from "../ConfigPanel";
 import { useState } from "react";
+import { OverrealErrorBoundary } from "~/components/OverrealErrorBoundary";
 import classes from "./style.module.scss";
 
 export function PipelinesView() {
@@ -55,6 +56,7 @@ export function PipelinesView() {
 	}
 
 	return (
+		<OverrealErrorBoundary fallbackTitle="Pipelines view error">
 		<Box className={classes.pipelinesLayout}>
 			<PipelineList
 				selectedId={selectedPipelineId}
@@ -70,6 +72,7 @@ export function PipelinesView() {
 				onClose={() => setSelectedStepId(null)}
 			/>
 		</Box>
+		</OverrealErrorBoundary>
 	);
 }
 

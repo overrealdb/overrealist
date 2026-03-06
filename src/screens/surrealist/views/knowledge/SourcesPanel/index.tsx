@@ -125,6 +125,7 @@ export function SourcesPanel({
 								variant="subtle"
 								size="sm"
 								onClick={() => refetch()}
+								aria-label="Refresh sources"
 							>
 								<Icon path={iconRefresh} />
 							</ActionIcon>
@@ -133,6 +134,7 @@ export function SourcesPanel({
 								size="sm"
 								color="surreal"
 								onClick={showIngestHandle.open}
+								aria-label="Ingest document"
 							>
 								<Icon path={iconPlus} />
 							</ActionIcon>

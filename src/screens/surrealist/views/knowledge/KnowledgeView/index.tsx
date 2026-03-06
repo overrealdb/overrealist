@@ -9,6 +9,7 @@ import { SourcesPanel } from "../SourcesPanel";
 import { GraphPanel } from "../GraphPanel";
 import { DetailPanel } from "../DetailPanel";
 import type { GraphNode } from "~/types/overrealdb";
+import { OverrealErrorBoundary } from "~/components/OverrealErrorBoundary";
 import classes from "./style.module.scss";
 
 export function KnowledgeView() {
@@ -77,6 +78,7 @@ export function KnowledgeView() {
 	}
 
 	return (
+		<OverrealErrorBoundary fallbackTitle="Knowledge view error">
 		<Box className={classes.knowledgeLayout}>
 			<SourcesPanel
 				selectedSourceId={selectedSourceId}
@@ -95,6 +97,7 @@ export function KnowledgeView() {
 				onClose={handleCloseDetail}
 			/>
 		</Box>
+		</OverrealErrorBoundary>
 	);
 }
 

@@ -10,7 +10,7 @@ import {
 	Textarea,
 } from "@mantine/core";
 import { Icon, iconChat, iconClose, Markdown } from "@surrealdb/ui";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { adapter } from "~/adapter";
 import { useConfigStore } from "~/stores/config";
 import { translateEngineEvent } from "~/components/Sidekick/sse";
@@ -25,6 +25,16 @@ interface ChatPreviewProps {
 interface PreviewMessage {
 	role: "user" | "assistant";
 	content: string;
+	timestamp: number;
+}
+
+function formatRelativeTime(ts: number): string {
+	const diff = Math.floor((Date.now() - ts) / 1000);
+	if (diff < 5) return "just now";
+	if (diff < 60) return `${diff}s ago`;
+	if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+	if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+	return new Date(ts).toLocaleString();
 }
 
 export function ChatPreview({ agentId }: ChatPreviewProps) {
@@ -35,12 +45,20 @@ export function ChatPreview({ agentId }: ChatPreviewProps) {
 	const [sessionId, setSessionId] = useState<string | null>(null);
 	const scrollRef = useRef<HTMLDivElement>(null);
 
+	// Auto-scroll on new messages
+	useEffect(() => {
+		const el = scrollRef.current;
+		if (el) {
+			el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+		}
+	}, [messages]);
+
 	const sendMessage = useCallback(async () => {
 		if (!input.trim() || !agentId || isStreaming) return;
 
 		const userMessage = input.trim();
 		setInput("");
-		setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
+		setMessages((prev) => [...prev, { role: "user", content: userMessage, timestamp: Date.now() }]);
 		setIsStreaming(true);
 
 		try {
@@ -72,7 +90,7 @@ export function ChatPreview({ agentId }: ChatPreviewProps) {
 
 			const decoder = new TextDecoder();
 			let assistantContent = "";
-			setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+			setMessages((prev) => [...prev, { role: "assistant", content: "", timestamp: Date.now() }]);
 
 			while (true) {
 				const { done, value } = await reader.read();
@@ -94,7 +112,7 @@ export function ChatPreview({ agentId }: ChatPreviewProps) {
 							setMessages((prev) => {
 								const updated = [...prev];
 								updated[updated.length - 1] = {
-									role: "assistant",
+									...updated[updated.length - 1],
 									content: assistantContent,
 								};
 								return updated;
@@ -108,7 +126,7 @@ export function ChatPreview({ agentId }: ChatPreviewProps) {
 		} catch (err) {
 			setMessages((prev) => [
 				...prev.slice(0, -1).filter((m) => m.content), // Remove empty assistant message
-				{ role: "assistant", content: `Error: ${err instanceof Error ? err.message : "Unknown error"}` },
+				{ role: "assistant", content: `Error: ${err instanceof Error ? err.message : "Unknown error"}`, timestamp: Date.now() },
 			]);
 		} finally {
 			setIsStreaming(false);
@@ -166,11 +184,19 @@ export function ChatPreview({ agentId }: ChatPreviewProps) {
 									bg="obsidian.6"
 								>
 									<Text size="sm">{msg.content}</Text>
+								<Text size="xs" c="dimmed" mt={2}>
+									{formatRelativeTime(msg.timestamp)}
+								</Text>
 								</Paper>
 							) : (
 								<Box>
 									{msg.content ? (
+										<>
 										<Markdown content={msg.content} />
+										<Text size="xs" c="dimmed" mt={2}>
+											{formatRelativeTime(msg.timestamp)}
+										</Text>
+									</>
 									) : (
 										<Group gap="xs">
 											<Loader
@@ -192,7 +218,15 @@ export function ChatPreview({ agentId }: ChatPreviewProps) {
 				</Stack>
 			</ScrollArea>
 
-			<Box className={classes.chatInputArea}>
+			<Box className={classes.chatInputArea} aria-busy={isStreaming}>
+				{isStreaming && (
+					<Group gap="xs" mb={4}>
+						<Loader size={10} color="surreal" />
+						<Text size="xs" c="dimmed">
+							Streaming...
+						</Text>
+					</Group>
+				)}
 				<Textarea
 					placeholder="Type a message..."
 					value={input}
@@ -207,6 +241,7 @@ export function ChatPreview({ agentId }: ChatPreviewProps) {
 					maxRows={4}
 					autosize
 					disabled={isStreaming}
+					styles={isStreaming ? { input: { opacity: 0.5 } } : undefined}
 				/>
 			</Box>
 		</Box>

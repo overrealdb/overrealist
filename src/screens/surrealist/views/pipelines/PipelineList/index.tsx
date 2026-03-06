@@ -102,6 +102,7 @@ export function PipelineList({ selectedId, onSelect }: PipelineListProps) {
 								variant="subtle"
 								size="sm"
 								onClick={() => refetch()}
+							aria-label="Refresh pipelines"
 							>
 								<Icon path={iconRefresh} />
 							</ActionIcon>
@@ -110,6 +111,7 @@ export function PipelineList({ selectedId, onSelect }: PipelineListProps) {
 								size="sm"
 								color="surreal"
 								onClick={showCreateHandle.open}
+							aria-label="Create pipeline"
 							>
 								<Icon path={iconPlus} />
 							</ActionIcon>

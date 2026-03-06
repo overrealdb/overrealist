@@ -57,6 +57,7 @@ export function AgentList({ selectedId, onSelect, onCreate }: AgentListProps) {
 							variant="subtle"
 							size="sm"
 							onClick={() => refetch()}
+							aria-label="Refresh agents"
 						>
 							<Icon path={iconRefresh} />
 						</ActionIcon>
@@ -65,6 +66,7 @@ export function AgentList({ selectedId, onSelect, onCreate }: AgentListProps) {
 							size="sm"
 							color="surreal"
 							onClick={onCreate}
+							aria-label="Create agent"
 						>
 							<Icon path={iconPlus} />
 						</ActionIcon>

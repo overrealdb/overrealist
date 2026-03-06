@@ -22,6 +22,7 @@ import { showNotification } from "@mantine/notifications";
 import { showErrorNotification } from "~/util/helpers";
 import { ConnectorList } from "../ConnectorList";
 import { ConnectorDetail } from "../ConnectorDetail";
+import { OverrealErrorBoundary } from "~/components/OverrealErrorBoundary";
 import classes from "./style.module.scss";
 
 const CONNECTOR_KINDS = [
@@ -119,7 +120,7 @@ export function ConnectorsView() {
 	}
 
 	return (
-		<>
+		<OverrealErrorBoundary fallbackTitle="Connectors view error">
 			<Box className={classes.connectorsLayout}>
 				<ConnectorList
 					selectedId={selectedConnectorId}
@@ -188,7 +189,7 @@ export function ConnectorsView() {
 					</Group>
 				</Stack>
 			</Modal>
-		</>
+		</OverrealErrorBoundary>
 	);
 }
 

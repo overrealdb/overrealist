@@ -23,6 +23,7 @@ import { showErrorNotification } from "~/util/helpers";
 import { AgentList } from "../AgentList";
 import { AgentDetail } from "../AgentDetail";
 import { ChatPreview } from "../ChatPreview";
+import { OverrealErrorBoundary } from "~/components/OverrealErrorBoundary";
 import classes from "./style.module.scss";
 
 export function AgentsView() {
@@ -117,7 +118,7 @@ export function AgentsView() {
 	}
 
 	return (
-		<>
+		<OverrealErrorBoundary fallbackTitle="Agents view error">
 			<Box className={classes.agentsLayout}>
 				<AgentList
 					selectedId={selectedAgentId}
@@ -183,7 +184,7 @@ export function AgentsView() {
 					</Group>
 				</Stack>
 			</Modal>
-		</>
+		</OverrealErrorBoundary>
 	);
 }
 
