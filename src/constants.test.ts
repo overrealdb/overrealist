@@ -44,6 +44,22 @@ describe("VIEW_PAGES", () => {
 		expect(disabledResult).toBe(true);
 	});
 
+	it("includes connectors view gated by overrealdb flag", () => {
+		const connectors = VIEW_PAGES.connectors;
+		expect(connectors).toBeDefined();
+		expect(connectors.id).toBe("connectors");
+		expect(connectors.name).toBe("Connectors");
+		expect(connectors.disabled).toBeDefined();
+
+		const disabledResult = connectors.disabled?.({
+			flags: { overrealdb: false } as any,
+			connection: "",
+			version: null,
+			isCloud: false,
+		});
+		expect(disabledResult).toBe(true);
+	});
+
 	it("has all standard views registered", () => {
 		const expectedViews = [
 			"dashboard",
@@ -59,6 +75,8 @@ describe("VIEW_PAGES", () => {
 			"migrations",
 			"agents",
 			"knowledge",
+			"pipelines",
+			"connectors",
 		] as const;
 
 		for (const view of expectedViews) {
